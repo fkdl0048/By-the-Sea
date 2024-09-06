@@ -47,6 +47,16 @@ void ABTSCharacterPlayer::BeginPlay()
 	Super::BeginPlay();
 }
 
+void ABTSCharacterPlayer::Landed(const FHitResult& Hit)
+{
+	Super::Landed(Hit);
+
+	if (CurState == ECharacterPlayerState::WAITFORIDLE)
+	{
+		CurState = ECharacterPlayerState::IDLE;
+	}
+}
+
 void ABTSCharacterPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
