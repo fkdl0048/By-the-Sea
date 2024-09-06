@@ -72,6 +72,20 @@ void UDefaultInputComponent::InitializeComponent()
 
 		InputMappingContext->MapKey(LookAction, EKeys::Mouse2D);
 	}
+
+	// Launch 액션
+	{
+		LaunchAction = NewObject<UInputAction>(this);
+		check(LaunchAction);
+		LaunchAction->ValueType = EInputActionValueType::Boolean;
+
+		TObjectPtr<UInputTriggerPressed> PressedTrigger = NewObject<UInputTriggerPressed>();
+		TObjectPtr<UInputTriggerReleased> ReleasedTrigger = NewObject<UInputTriggerReleased>();
+
+		FEnhancedActionKeyMapping& EnhancedActionKeyMapping = InputMappingContext->MapKey(LaunchAction, EKeys::SpaceBar);
+		EnhancedActionKeyMapping.Triggers.Add(PressedTrigger);
+		EnhancedActionKeyMapping.Triggers.Add(ReleasedTrigger);
+	}
 }
 
 void UDefaultInputComponent::SetupInputComponent(UInputComponent* InputComponent)
@@ -81,10 +95,12 @@ void UDefaultInputComponent::SetupInputComponent(UInputComponent* InputComponent
 	UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent);
 	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &UDefaultInputComponent::Move);
 	EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &UDefaultInputComponent::Look);
+	EnhancedInputComponent->BindAction(LaunchAction, ETriggerEvent::Triggered, this, &UDefaultInputComponent::Launch);
 }
 
 void UDefaultInputComponent::Move(const FInputActionValue& Value)
 {
+	if (!bAllowMove) return;
 	if (!IsValid(OwnerCharacter)) return;
 	if (!IsValid(OwnerController)) return;
 
@@ -109,4 +125,46 @@ void UDefaultInputComponent::Look(const FInputActionValue& Value)
 	FVector2D LookVector = Value.Get<FVector2D>();
 	OwnerCharacter->AddControllerYawInput(LookVector.X * MouseSensitivity);
 	OwnerCharacter->AddControllerPitchInput(LookVector.Y * MouseSensitivity);
+}
+
+void UDefaultInputComponent::Launch(const FInputActionValue& Value)
+{
+	if (!IsValid(OwnerCharacter)) return;
+
+	bool bJump = Value.Get<bool>();
+	if (bJump)
+	{
+		// Jump Pressed
+	}
+	else
+	{
+		UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(OwnerController->GetLocalPlayer());
+		if (!IsValid(Subsystem)) 0.0f;
+
+		TArray<FKey> MoveActionMappedKey = Subsystem->QueryKeysMappedToAction(MoveAction);
+		check(MoveActionMappedKey.Num() == 4);
+
+		FVector CurInputVector = FVector::Zero();
+		if (OwnerController->IsInputKeyDown(MoveActionMappedKey[0])) CurInputVector.Y += 1.0f;
+		if (OwnerController->IsInputKeyDown(MoveActionMappedKey[1])) CurInputVector.Y -= 1.0f;
+		if (OwnerController->IsInputKeyDown(MoveActionMappedKey[2])) CurInputVector.X -= 1.0f;
+		if (OwnerController->IsInputKeyDown(MoveActionMappedKey[3])) CurInputVector.X += 1.0f;
+
+		ACharacter* PlayerCharacter = Cast<ACharacter>(GetOwner());
+		check(PlayerCharacter);
+
+		FRotator ControllerRotation = OwnerController->GetControlRotation();
+		FRotator ControllerRotationYaw = FRotator(0.0f, ControllerRotation.Yaw, 0.0f);
+		FVector ControllerFowardVector = UKismetMathLibrary::GetForwardVector(ControllerRotationYaw);
+		FVector ControllerRightVector = UKismetMathLibrary::GetRightVector(ControllerRotationYaw);
+
+		FVector InputDirection = (ControllerFowardVector * CurInputVector.Y) + (ControllerRightVector * CurInputVector.X);
+		InputDirection.Normalize();
+
+		FVector LaunchVector = InputDirection + SpeedCorretion;
+		LaunchVector *= LaunchStrength;
+
+		// 물고기 날리기
+		OwnerCharacter->LaunchCharacter(LaunchVector, true, true);
+	}
 }

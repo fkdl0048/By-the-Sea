@@ -23,6 +23,9 @@ public:
 
 // 이동
 protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	uint8 bAllowMove : 1;
+
 	UPROPERTY()
 	TObjectPtr<class UInputAction> MoveAction;
 
@@ -39,4 +42,18 @@ protected:
 
 	UFUNCTION()
 	virtual void Look(const FInputActionValue& Value);
+
+// 물고기 날리기
+protected:
+	UPROPERTY()
+	TObjectPtr<class UInputAction> LaunchAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float LaunchStrength;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FVector SpeedCorretion = { 0.0f, 0.0f, 1.0f };
+
+	UFUNCTION()
+	virtual void Launch(const FInputActionValue& Value);
 };
