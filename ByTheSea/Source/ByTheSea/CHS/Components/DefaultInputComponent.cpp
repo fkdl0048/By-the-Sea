@@ -11,6 +11,7 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "CHS/Character/BTSCharacterPlayer.h"
 
 UDefaultInputComponent::UDefaultInputComponent()
 {
@@ -131,6 +132,10 @@ void UDefaultInputComponent::Launch(const FInputActionValue& Value)
 {
 	if (!IsValid(OwnerCharacter)) return;
 
+	ABTSCharacterPlayer* BTSCharacterPlayer = Cast<ABTSCharacterPlayer>(OwnerCharacter);
+	if (!IsValid(BTSCharacterPlayer)) return;
+	if (BTSCharacterPlayer->GetCurState() != ECharacterPlayerState::IDLE) return;
+		
 	bool bJump = Value.Get<bool>();
 	if (bJump)
 	{
@@ -166,5 +171,16 @@ void UDefaultInputComponent::Launch(const FInputActionValue& Value)
 
 		// 물고기 날리기
 		OwnerCharacter->LaunchCharacter(LaunchVector, true, true);
+
+		// Flutter로 설정하기
+		UFunction* FlutterFunction = OwnerCharacter->FindFunction(FName(TEXT("EventSetFlutter")));
+		if (FlutterFunction)
+		{
+			OwnerCharacter->ProcessEvent(FlutterFunction, nullptr);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Log, TEXT("SetFlutterFunc Not Found"))
+		}
 	}
 }
