@@ -16,7 +16,4 @@ class BYTHESEA_API ABTSPlayerController : public APlayerController
 public:
 	ABTSPlayerController();
 	virtual void BeginPlay() override;
-
-protected:
-	virtual void PostInitializeComponents() override;
 };

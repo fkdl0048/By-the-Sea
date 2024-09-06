@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Core/BTSGameModeBase.h"
+#include "CHS/Core/BTSGameModeBase.h"
 
 ABTSGameModeBase::ABTSGameModeBase()
 {
