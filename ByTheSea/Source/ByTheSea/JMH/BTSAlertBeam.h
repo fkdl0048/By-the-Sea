@@ -28,6 +28,8 @@ public:
 	void FlickerContinuously(int32 InCurRepeatCount, int32 InMaxRepeatCount);
 	void Flicker();
 	void Deactivate();
+
+	void ToggleNiagaraSystem();
 public:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UNiagaraComponent> Niagara;
@@ -36,4 +38,6 @@ public:
 	float FlickerInterval;
 	
 	FTimerHandle FlickerTimerHandle;
+
+	bool bIsNiagaraActive;
 };

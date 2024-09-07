@@ -92,7 +92,7 @@ void ABTSBird::ShowAlertRay(FRotator DirToFly)
 	// ABTSAlertBeam* Beam = nullptr;
 	AlertBeam = GetWorld()->SpawnActor<ABTSAlertBeam>(AlertBeamClass, GetActorLocation(), FRotator::ZeroRotator);
 	AlertBeam->SetToShowStrataBeam(FLinearColor::Red, GetActorLocation() + DirToFly.Vector() * 1000.0f);	
-	AlertBeam->FlickerBeam(FlickeringCount);
+	// AlertBeam->FlickerBeam(FlickeringCount);
 	// GetActorLocation() + BirdMesh->GetComponentRotation().Quaternion().GetForwardVector() * 500.0f
 	// 타이머
 	// 일정 시간 후 FlyToPlayer() 호출

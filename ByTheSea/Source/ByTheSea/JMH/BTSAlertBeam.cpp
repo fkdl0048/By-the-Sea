@@ -12,14 +12,14 @@ ABTSAlertBeam::ABTSAlertBeam()
 	Niagara = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Niagara"));
 	Niagara->SetupAttachment(RootComponent);
 
-	FlickerInterval = 0.5f;
+	bIsNiagaraActive = false;
 }
 
 // Called when the game starts or when spawned
 void ABTSAlertBeam::BeginPlay()
 {
 	Super::BeginPlay();
-		
+	GetWorld()->GetTimerManager().SetTimer(FlickerTimerHandle, this, &ABTSAlertBeam::ToggleNiagaraSystem, FlickerInterval, true);
 	// UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), WeaponData.EjectShellParticles, EjectLocation, EjectRotation);
 }
 
@@ -39,9 +39,29 @@ void ABTSAlertBeam::SetToShowStrataBeam(FLinearColor BeamColor, FVector BeamEnd)
 
 void ABTSAlertBeam::FlickerBeam(uint32 InMaxRepeatCount)
 {
-	const int InitialRepeatCount = 0;
-	FlickerContinuously(InitialRepeatCount, InMaxRepeatCount);
+	Niagara->Activate();
+	// const int InitialRepeatCount = 0;
+	// FlickerContinuously(InitialRepeatCount, InMaxRepeatCount);
+	GetWorld()->GetTimerManager().SetTimer(
+		FlickerTimerHandle,
+		[this]()
+		{
+			Niagara->Deactivate();
+		},FlickerInterval, false);
+
+	GetWorld()->GetTimerManager().SetTimer(
+		FlickerTimerHandle,
+		[this]()
+		{
+			Niagara->Activate();
+		},FlickerInterval * 2, false);
 	
+	GetWorld()->GetTimerManager().SetTimer(
+		FlickerTimerHandle,
+		[this]()
+		{
+			Niagara->Deactivate();
+		},FlickerInterval * 3, false);
 }
 
 void ABTSAlertBeam::FlickerContinuously(int32 InCurRepeatCount, int32 InMaxRepeatCount)
@@ -52,30 +72,47 @@ void ABTSAlertBeam::FlickerContinuously(int32 InCurRepeatCount, int32 InMaxRepea
 		return;
 	}
 
-	// Flicker();
-	Niagara->Activate();
+	Flicker();
 	
 	GetWorld()->GetTimerManager().SetTimer(
 		FlickerTimerHandle,
 		[this, InCurRepeatCount, InMaxRepeatCount]()
-		{
+		{			
 			FlickerContinuously(InCurRepeatCount + 1, InMaxRepeatCount);
-		},
-		FlickerInterval, false);
+		},FlickerInterval, false);
 }
 
 // 이 함수를 FlickerInterval*2 초마다 반복한다. 
 void ABTSAlertBeam::Flicker()
 {
-	Niagara->Activate();
-	// FlickerInterval초 뒤에 꺼짐
-	GetWorld()->GetTimerManager().SetTimer(FlickerTimerHandle, [this]()
+	if(Niagara->IsActive())
 	{
-		Niagara->Deactivate();	
-	}, FlickerInterval, false);
+		Niagara->Deactivate();		
+	}
+	else
+	{
+		Niagara->Activate();		
+	}
+	// FlickerInterval초 뒤에 꺼짐
+	
 }
 
 void ABTSAlertBeam::Deactivate()
 {
+	GetWorld()->GetTimerManager().ClearTimer(FlickerTimerHandle);
 	Niagara->Deactivate();
+}
+
+void ABTSAlertBeam::ToggleNiagaraSystem()
+{
+	if (bIsNiagaraActive)
+	{
+		Niagara->Deactivate();
+	}
+	else
+	{
+		Niagara->Activate();
+	}
+
+	bIsNiagaraActive = !bIsNiagaraActive; // 상태를 반전
 }
