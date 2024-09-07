@@ -42,7 +42,13 @@ void ABTSGameMode::ClearGame()
 		BTSGameState->UpdateMaxTime();
 	}
 	Cast<ABTSHUD>(GetWorld()->GetFirstPlayerController()->GetHUD())->ShowClearHUD();
-	OnGameClear.Broadcast();	
+	OnGameClear.Broadcast();
+	
+	APlayerController* PC = GetWorld()->GetFirstPlayerController();
+	if (PC)
+	{
+		PC->UnPossess();
+	}
 }
 
 void ABTSGameMode::RespawnPlayer()
