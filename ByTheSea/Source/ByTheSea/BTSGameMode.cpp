@@ -7,6 +7,7 @@ ABTSGameMode::ABTSGameMode()
 	PrimaryActorTick.bCanEverTick = true;
 	GameStateClass = ABTSGameState::StaticClass();
 	HUDClass = ABTSHUD::StaticClass();
+	DefaultPawnClass = nullptr;
 	CurrentGameState = EGameState::MainMenu;
 	RespawnCount = 0;
 }
@@ -22,7 +23,13 @@ void ABTSGameMode::StartGame()
 void ABTSGameMode::EndGame()
 {
 	SetGameState(EGameState::GameOver);
-	Cast<ABTSHUD>(GetWorld()->GetFirstPlayerController()->GetHUD())->ShowGameOverHUD();
+	ABTSGameState* BTSGameState = GetGameState<ABTSGameState>();
+	if (BTSGameState)
+	{
+		BTSGameState->CurrentPlayTime = 0.0f;
+		BTSGameState->IncrementRespawnCount();
+	}
+	RespawnPlayer();
 	OnGameOver.Broadcast();
 }
 

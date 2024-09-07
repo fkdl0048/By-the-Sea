@@ -48,8 +48,17 @@ protected:
 	UPROPERTY()
 	TObjectPtr<class UInputAction> LaunchAction;
 
+	UPROPERTY()
+	double LaunchPressedTime;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float LaunchStrength;
+	double LaunchPressTimeMax = 2.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float LaunchStrengthMax;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float LaunchStrengthMin;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FVector SpeedCorretion = { 0.0f, 0.0f, 1.0f };

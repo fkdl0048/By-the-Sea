@@ -21,11 +21,5 @@ public:
 	void ShowStartHUD();
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "HUD")
-	void ShowGameOverHUD();
-
-	UFUNCTION(BlueprintImplementableEvent, Category = "HUD")
 	void ShowClearHUD();
-
-	UFUNCTION(BlueprintImplementableEvent, Category = "HUD")
-	void UpdateTimeHUD(float CurrentTime);
 };
