@@ -52,19 +52,30 @@ void ABirdManager::Tick(float DeltaTime)
 	// 범위 안에 들어오면 
 	if(DistanceFromPlayer >= InnerRadius && DistanceFromPlayer <= OuterRadius)
 	{
+		UE_LOG(LogTemp, Log, TEXT("In Boundary"))
 		if(bDoOnce == false)
 		{
 			bDoOnce = true;
 			SpawnBird();
 		}
+		
 		if(bSpawned == false)
 		{
 			bSpawned = true;
-			// 스폰 다 되고 3초 뒤에 스폰
+			UE_LOG(LogTemp, Log, TEXT("bSpawned"))
+			// 스폰 다 되고 6초 뒤에 스폰
 			GetWorld()->GetTimerManager().SetTimer(SpawnTimerHandle,this,&ABirdManager::SpawnBird,
 			SpawnInterval, false);			
 		}
 	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("Out Boundary"))
+		bSpawned = false;
+		// 구역 밖이면 Timer 초기화
+		GetWorld()->GetTimerManager().ClearTimer(SpawnTimerHandle);
+	}
+	UE_LOG(LogTemp, Log, TEXT("bSpawned: %d"), bSpawned)
 }
 
 void ABirdManager::FindFish()
@@ -92,20 +103,68 @@ void ABirdManager::SpawnBird()
 {
 	bSpawned = false;
 	GetWorld()->GetTimerManager().ClearTimer(SpawnTimerHandle);
+	SpawnBirdsInSequence(3, 0.3f); // 0.3초 간격으로 3번 스폰
+}
+
+void ABirdManager::SpawnBirdsInSequence(int32 SpawnCnt, float Interval)
+{
+	// 타이머 설정으로 반복 스폰 실행
+	GetWorld()->GetTimerManager().SetTimer(SpawnSequenceTimerHandle, this, &ABirdManager::SpawnSingleBird, 
+		Interval, true); // 'true'로 반복 설정
+    
+	BirdsToSpawn = SpawnCnt; // 스폰 횟수를 저장
+	SpawnedBirdCount = 0; // 스폰된 새의 초기 카운트를 설정
+}
+
+void ABirdManager::SpawnSingleBird()
+{
+	if (SpawnedBirdCount >= BirdsToSpawn)
+	{
+		// 타이머 중지
+		GetWorld()->GetTimerManager().ClearTimer(SpawnSequenceTimerHandle);
+		return;
+	}
+    
+	// 스폰 로직
+	FActorSpawnParameters ActorSpawnParams;    
+	ABTSBird* Seagull = nullptr;
+    
+	CalculateSpawnTransform();
+    
+	Seagull = GetWorld()->SpawnActor<ABTSBird>(BirdClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+	Seagull->ShowAlertRay(SpawnRotation);
+	AllBirds.Add(Seagull);
+    
+	if (!Seagull)
+	{
+		UE_LOG(LogTemp, Log, TEXT("Seagull is Null"));
+	}
+    
+	SpawnedBirdCount++; // 스폰 카운트 증가
+}
+
+
+/*
+void ABirdManager::SpawnBird()
+{
+	bSpawned = false;
+	GetWorld()->GetTimerManager().ClearTimer(SpawnTimerHandle);
 	// Set Spawn Collision Handling Override
 	FActorSpawnParameters ActorSpawnParams;	
 	ABTSBird* Seagull = nullptr;
 	
 	CalculateSpawnTransform();
-	// 서버에서 생성하면 자동 리플리케이션
+
 	Seagull = GetWorld()->SpawnActor<ABTSBird>(BirdClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
 	Seagull->ShowAlertRay(SpawnRotation);
 	AllBirds.Add(Seagull);
+	
 	if(!Seagull)
 	{
 		UE_LOG(LogTemp, Log, TEXT("Seagull is Null"))
 	}
 }
+*/
 
 void ABirdManager::DeleteAllBird()
 {
