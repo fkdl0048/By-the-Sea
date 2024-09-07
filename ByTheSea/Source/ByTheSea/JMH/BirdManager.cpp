@@ -18,13 +18,51 @@ ABirdManager::ABirdManager()
 	OuterCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("OuterCapsule"));
 	OuterCapsule->SetupAttachment(RootComponent);
 	CurrentSpawnCount = 0;
+	bSpawned = false;
+	bDoOnce = false;
+	
 }
 
 // Called when the game starts or when spawned
 void ABirdManager::BeginPlay()
 {
 	Super::BeginPlay();
-	// DrawDebugCylinder()
+	// 게임 모드를 가져온다
+	ABTSGameMode* GameMode = Cast<ABTSGameMode>(GetWorld()->GetAuthGameMode());
+	if (GameMode)
+	{
+		// OnGameStart 델리게이트에 FindFish 함수를 바인딩
+		GameMode->OnGameStart.AddDynamic(this, &ABirdManager::FindFish);
+	}
+}
+
+// Called every frame
+void ABirdManager::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	if(!Fish) return; 
+		
+	DistanceFromPlayer = UE::Geometry::Distance(Fish->GetActorLocation(), this->GetActorLocation());
+	// 범위 안에 들어오면 
+	if(DistanceFromPlayer >= InnerRadius && DistanceFromPlayer <= OuterRadius)
+	{
+		if(bDoOnce == false)
+		{
+			bDoOnce = true;
+			SpawnBird();
+		}
+		if(bSpawned == false)
+		{
+			bSpawned = true;
+			// 스폰 다 되고 3초 뒤에 스폰
+			GetWorld()->GetTimerManager().SetTimer(SpawnTimerHandle,this,&ABirdManager::SpawnBird,
+			SpawnInterval, false);			
+		}
+	}
+}
+
+void ABirdManager::FindFish()
+{
 	// 물고기 찾기
 	// 물고기 배열 선언
 	TArray<AActor*> FoundFish;
@@ -44,37 +82,18 @@ void ABirdManager::BeginPlay()
 	}
 }
 
-// Called every frame
-void ABirdManager::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-	DistanceFromPlayer = UE::Geometry::Distance(Fish->GetActorLocation(), this->GetActorLocation());
-	// 범위 안에 들어오면 
-	if(DistanceFromPlayer >= InnerRadius && DistanceFromPlayer <= OuterRadius)
-	{
-		// SpawnCount마리까지만 스폰 가능
-		if(CurrentSpawnCount >= SpawnCount) return;
-		
-		// 갈매기 생성
-		CurrentSpawnCount++;
-		SpawnBird();		
-	}
-
-}
-
 void ABirdManager::SpawnBird()
 {
+	bSpawned = false;
+	GetWorld()->GetTimerManager().ClearTimer(SpawnTimerHandle);
 	// Set Spawn Collision Handling Override
 	FActorSpawnParameters ActorSpawnParams;	
-	// ActorSpawnParams.Owner = GetOwner();
-	// ActorSpawnParams.Instigator = InstigatorPawn;
 	ABTSBird* Seagull = nullptr;
 	
 	CalculateSpawnTransform();
 	// 서버에서 생성하면 자동 리플리케이션
 	Seagull = GetWorld()->SpawnActor<ABTSBird>(BirdClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
 	Seagull->ShowAlertRay(SpawnRotation);
-	// Seagull->ShowAlertRay(Fish);
 	if(!Seagull)
 	{
 		UE_LOG(LogTemp, Log, TEXT("Seagull is Null"))

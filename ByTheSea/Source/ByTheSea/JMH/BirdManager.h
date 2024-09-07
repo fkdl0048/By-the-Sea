@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "BTSBird.h"
 #include "CHS/Character/BTSCharacterPlayer.h"
+#include "ByTheSea/BTSGameMode.h"
 #include "GameFramework/Actor.h"
 #include "BirdManager.generated.h"
 
@@ -25,6 +26,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UFUNCTION()
+	virtual void FindFish();
 public:
 	void SpawnBird();
 
@@ -57,6 +60,9 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly)
 	float CornRadius;
+
+	UPROPERTY(EditDefaultsOnly)
+	float SpawnInterval;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	float DistanceFromPlayer;
@@ -70,5 +76,13 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int32 CurrentSpawnCount;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool bSpawned;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool bDoOnce;
+
+	FTimerHandle SpawnTimerHandle;
+
+	
 };
