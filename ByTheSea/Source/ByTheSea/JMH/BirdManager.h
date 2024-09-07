@@ -30,6 +30,9 @@ public:
 	virtual void FindFish();
 public:
 	void SpawnBird();
+	void SpawnBirdsInSequence(int32 SpawnCnt, float Interval);
+
+	void SpawnSingleBird();
 	
 	UFUNCTION()
 	void DeleteAllBird();
@@ -89,6 +92,12 @@ public:
 	bool bDoOnce;
 
 	FTimerHandle SpawnTimerHandle;
+	FTimerHandle SpawnSequenceTimerHandle;
 
+	UPROPERTY(EditDefaultsOnly)
+	int32 BirdsToSpawn;
+	
+	UPROPERTY(EditDefaultsOnly)
+	int32 SpawnedBirdCount;
 	
 };
