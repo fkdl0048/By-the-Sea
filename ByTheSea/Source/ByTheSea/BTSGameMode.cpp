@@ -75,6 +75,7 @@ void ABTSGameMode::RespawnPlayer()
 		}
 	}
 
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NiagaraSystem, PlayerSpawnLocation, FRotator::ZeroRotator, FVector(1.0f));
 	ABTSGameState* BTSGameState = GetGameState<ABTSGameState>();
 	if (BTSGameState)
 	{

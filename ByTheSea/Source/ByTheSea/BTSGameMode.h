@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameMode.h"
+#include "NiagaraFunctionLibrary.h"
 #include "BTSGameMode.generated.h"
+
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGameStart);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGameOver);
@@ -54,6 +56,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Game")
 	FVector PlayerSpawnLocation;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Game")
+	UNiagaraSystem* NiagaraSystem;
 
 private:
 	EGameState CurrentGameState;
