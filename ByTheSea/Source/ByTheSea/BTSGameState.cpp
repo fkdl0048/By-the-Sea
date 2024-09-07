@@ -5,7 +5,7 @@
 ABTSGameState::ABTSGameState()
 {
 	CurrentPlayTime = 0.0f;
-	MaxPlayTime = 0.0f;
+	MaxPlayTime = 999999.0f;
 	RespawnCount = 0;
 }
 
