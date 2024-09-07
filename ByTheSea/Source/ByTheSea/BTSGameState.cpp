@@ -16,7 +16,7 @@ void ABTSGameState::UpdatePlayTime(float DeltaTime)
 
 void ABTSGameState::UpdateMaxTime()
 {
-	if (CurrentPlayTime > MaxPlayTime)
+	if (CurrentPlayTime < MaxPlayTime)
 	{
 		MaxPlayTime = CurrentPlayTime;
 	}
