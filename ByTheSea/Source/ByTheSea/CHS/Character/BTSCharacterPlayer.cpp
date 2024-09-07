@@ -6,7 +6,9 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
 #include "CHS/Components/PlayerInputComponent.h"
-
+#include "InputMappingContext.h"
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
 
 ABTSCharacterPlayer::ABTSCharacterPlayer()
 {
@@ -55,6 +57,18 @@ void ABTSCharacterPlayer::Landed(const FHitResult& Hit)
 	{
 		CurState = ECharacterPlayerState::IDLE;
 	}
+}
+
+void ABTSCharacterPlayer::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	APlayerController* CurController = Cast<APlayerController>(NewController);
+
+	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(CurController->GetLocalPlayer());
+	if (!IsValid(Subsystem)) return;
+
+	Subsystem->ClearAllMappings();
 }
 
 void ABTSCharacterPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
