@@ -20,6 +20,7 @@ void ABTSGameMode::StartGame()
 	if (BTSGameState)
 	{
 		BTSGameState->CurrentPlayTime = 0.0f;
+		UE_LOG(LogTemp, Warning, TEXT("Current Play Time: %f"), BTSGameState->CurrentPlayTime);
 	}
 	Cast<ABTSHUD>(GetWorld()->GetFirstPlayerController()->GetHUD())->ShowStartHUD();
 	OnGameStart.Broadcast();
@@ -46,14 +47,17 @@ void ABTSGameMode::ClearGame()
 		BTSGameState->UpdateMaxTime();
 		UE_LOG(LogTemp, Warning, TEXT("Max Play Time: %f"), BTSGameState->MaxPlayTime);
 	}
+
+	APlayerController* PC = GetWorld()->GetFirstPlayerController();
+	if (PC->GetPawn())
+	{
+		PC->GetPawn()->Destroy();
+	}
+	
 	Cast<ABTSHUD>(GetWorld()->GetFirstPlayerController()->GetHUD())->ShowClearHUD();
 	OnGameClear.Broadcast();
 	
-	APlayerController* PC = GetWorld()->GetFirstPlayerController();
-	if (PC)
-	{
-		PC->UnPossess();
-	}
+
 }
 
 void ABTSGameMode::RespawnPlayer()
