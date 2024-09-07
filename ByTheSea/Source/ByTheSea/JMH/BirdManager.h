@@ -1,0 +1,74 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "BTSBird.h"
+#include "CHS/Character/BTSCharacterPlayer.h"
+#include "GameFramework/Actor.h"
+#include "BirdManager.generated.h"
+
+UCLASS()
+class BYTHESEA_API ABirdManager : public AActor
+{
+	GENERATED_BODY()
+	
+public:	
+	// Sets default values for this actor's properties
+	ABirdManager();
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+public:	
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
+public:
+	void SpawnBird();
+
+	void CalculateSpawnTransform();
+public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	TObjectPtr<class UCapsuleComponent> InnerCapsule;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	TObjectPtr<class UCapsuleComponent> OuterCapsule;
+
+	UPROPERTY()
+	TObjectPtr<ABTSCharacterPlayer> Fish;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<ABTSBird> BirdClass;
+
+public:
+	UPROPERTY(EditDefaultsOnly)
+	float InnerRadius;
+
+	UPROPERTY(EditDefaultsOnly)
+	float OuterRadius;
+
+	UPROPERTY(EditDefaultsOnly)
+	float CornAngle;
+	
+	UPROPERTY(EditDefaultsOnly)
+	int32 SpawnCount;
+	
+	UPROPERTY(EditDefaultsOnly)
+	float CornRadius;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float DistanceFromPlayer;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FVector SpawnLocation;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FRotator SpawnRotation;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	int32 CurrentSpawnCount;
+
+
+};
