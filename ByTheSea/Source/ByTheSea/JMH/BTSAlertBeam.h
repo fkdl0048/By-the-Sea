@@ -24,9 +24,16 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void SetToShowStrataBeam(FLinearColor BeamColor, FVector BeamEnd);
+	void FlickerBeam(uint32 InMaxRepeatCount);
+	void FlickerContinuously(int32 InCurRepeatCount, int32 InMaxRepeatCount);
+	void Flicker();
+	void Deactivate();
 public:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UNiagaraComponent> Niagara;
 
+	UPROPERTY(EditDefaultsOnly)
+	float FlickerInterval;
 	
+	FTimerHandle FlickerTimerHandle;
 };
