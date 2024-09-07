@@ -53,7 +53,7 @@ void ABirdManager::Tick(float DeltaTime)
 	if(DistanceFromPlayer >= InnerRadius && DistanceFromPlayer <= OuterRadius)
 	{
 		// SpawnCount마리까지만 스폰 가능
-		if(CurrentSpawnCount > SpawnCount) return;
+		if(CurrentSpawnCount >= SpawnCount) return;
 		
 		// 갈매기 생성
 		CurrentSpawnCount++;

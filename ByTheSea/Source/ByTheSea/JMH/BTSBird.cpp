@@ -64,10 +64,6 @@ void ABTSBird::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 	{
 		UE_LOG(LogTemp, Warning, TEXT("You Die"))
 	}
-	else
-	{
-		
-	}
 	// 정지
 	// 콜리전 끄기
 	// 자지가신 무시
@@ -93,9 +89,10 @@ void ABTSBird::ShowAlertRay(FRotator DirToFly)
 		FColor::Black, false, -1,0,5);
 	
 	// Ray쏘기
-	ABTSAlertBeam* Beam = nullptr;
-	Beam = GetWorld()->SpawnActor<ABTSAlertBeam>(AlertBeamClass, GetActorLocation(), FRotator::ZeroRotator);
-	Beam->SetToShowStrataBeam(FLinearColor::Red, GetActorLocation() + DirToFly.Vector() * 1000.0f);
+	// ABTSAlertBeam* Beam = nullptr;
+	AlertBeam = GetWorld()->SpawnActor<ABTSAlertBeam>(AlertBeamClass, GetActorLocation(), FRotator::ZeroRotator);
+	AlertBeam->SetToShowStrataBeam(FLinearColor::Red, GetActorLocation() + DirToFly.Vector() * 1000.0f);	
+	// AlertBeam->FlickerBeam(FlickeringCount);
 	// GetActorLocation() + BirdMesh->GetComponentRotation().Quaternion().GetForwardVector() * 500.0f
 	// 타이머
 	// 일정 시간 후 FlyToPlayer() 호출
@@ -106,34 +103,10 @@ void ABTSBird::ShowAlertRay(FRotator DirToFly)
 	}, AttackDelay, false);
 }
 
-void ABTSBird::ShowAlertRay(AActor* Fish)
-{
-	FTimerHandle AttackTimerHandle;
-	// BirdMesh
-	DrawDebugLine(GetWorld(),GetActorLocation(),GetActorLocation() + BirdMesh->GetComponentRotation().Quaternion().GetForwardVector() * 100.0f,
-		FColor::Black, false, -1,0,5);
-	
-	// Ray쏘기
-	ABTSAlertBeam* Beam = nullptr;
-	Beam = GetWorld()->SpawnActor<ABTSAlertBeam>(AlertBeamClass, GetActorLocation(), Fish->GetActorRotation());
-	Beam->SetToShowStrataBeam(FLinearColor::Red, FVector(0,0,0));
-	// GetActorLocation() + BirdMesh->GetComponentRotation().Quaternion().GetForwardVector() * 500.0f
-	// 타이머
-	// 일정 시간 후 FlyToPlayer() 호출
-	GetWorld()->GetTimerManager().SetTimer(AttackTimerHandle,
-		[this, Fish]
-	{
-		ABTSBird::FlyToPlayer(Fish);
-	}, AttackDelay, false);
-}
-
-void ABTSBird::FlyToPlayer(AActor* Fish)
-{
-	
-}
-
 void ABTSBird::FlyToPlayer(FRotator DirToFly)
 {
+	// 빔 비활성화
+	AlertBeam->Deactivate();
 	// 방향을 전달받아서 발사
 	ProjectileMovementComponent->Velocity = DirToFly.Vector() * Speed;
 }
@@ -142,13 +115,4 @@ void ABTSBird::SetProjectileActive(bool IsActive)
 {
 	SetActorEnableCollision(IsActive); 
 	SetActorTickEnabled(IsActive);
-	/*if (!IsActive)
-	{
-		ProjectileMovementComponent->Velocity = FVector::ZeroVector;
-		// CollisionComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	}
-	else
-	{
-		ProjectileMovementComponent->Velocity = GetActorForwardVector() * 100.0f;
-	}*/
 }

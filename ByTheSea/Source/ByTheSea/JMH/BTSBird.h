@@ -51,7 +51,10 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<ABTSAlertBeam> AlertBeamClass;
-	
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<ABTSAlertBeam> AlertBeam;
+
 public:
 	// 어딘가에 박힌 경우 true
 	bool bCrashed;
@@ -61,4 +64,7 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly)
 	float Speed;
+
+	UPROPERTY(EditDefaultsOnly)
+	int32 FlickeringCount;
 };
