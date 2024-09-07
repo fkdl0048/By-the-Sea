@@ -52,19 +52,30 @@ void ABirdManager::Tick(float DeltaTime)
 	// 범위 안에 들어오면 
 	if(DistanceFromPlayer >= InnerRadius && DistanceFromPlayer <= OuterRadius)
 	{
+		UE_LOG(LogTemp, Log, TEXT("In Boundary"))
 		if(bDoOnce == false)
 		{
 			bDoOnce = true;
 			SpawnBird();
 		}
+		
 		if(bSpawned == false)
 		{
 			bSpawned = true;
-			// 스폰 다 되고 3초 뒤에 스폰
+			UE_LOG(LogTemp, Log, TEXT("bSpawned"))
+			// 스폰 다 되고 6초 뒤에 스폰
 			GetWorld()->GetTimerManager().SetTimer(SpawnTimerHandle,this,&ABirdManager::SpawnBird,
 			SpawnInterval, false);			
 		}
 	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("Out Boundary"))
+		bSpawned = false;
+		// 구역 밖이면 Timer 초기화
+		GetWorld()->GetTimerManager().ClearTimer(SpawnTimerHandle);
+	}
+	UE_LOG(LogTemp, Log, TEXT("bSpawned: %d"), bSpawned)
 }
 
 void ABirdManager::FindFish()
@@ -97,7 +108,6 @@ void ABirdManager::SpawnBird()
 	ABTSBird* Seagull = nullptr;
 	
 	CalculateSpawnTransform();
-	// 서버에서 생성하면 자동 리플리케이션
 	Seagull = GetWorld()->SpawnActor<ABTSBird>(BirdClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
 	Seagull->ShowAlertRay(SpawnRotation);
 	AllBirds.Add(Seagull);
