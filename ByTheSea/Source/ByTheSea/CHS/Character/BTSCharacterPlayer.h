@@ -33,7 +33,7 @@ public:
 	FORCEINLINE ECharacterPlayerState GetCurState() { return CurState; }
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = State)
-	ECharacterPlayerState CurState = ECharacterPlayerState::FLUTTER;
+	ECharacterPlayerState CurState = ECharacterPlayerState::IDLE;
 
 // 카메라 부분
 protected:
