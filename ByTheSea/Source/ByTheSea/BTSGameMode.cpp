@@ -16,6 +16,11 @@ void ABTSGameMode::StartGame()
 {
 	SetGameState(EGameState::Playing);
 	RespawnPlayer();
+	ABTSGameState* BTSGameState = GetGameState<ABTSGameState>();
+	if (BTSGameState)
+	{
+		BTSGameState->CurrentPlayTime = 0.0f;
+	}
 	Cast<ABTSHUD>(GetWorld()->GetFirstPlayerController()->GetHUD())->ShowStartHUD();
 	OnGameStart.Broadcast();
 }
@@ -26,7 +31,6 @@ void ABTSGameMode::EndGame()
 	ABTSGameState* BTSGameState = GetGameState<ABTSGameState>();
 	if (BTSGameState)
 	{
-		BTSGameState->CurrentPlayTime = 0.0f;
 		BTSGameState->IncrementRespawnCount();
 	}
 	RespawnPlayer();
@@ -40,6 +44,7 @@ void ABTSGameMode::ClearGame()
 	if (BTSGameState)
 	{
 		BTSGameState->UpdateMaxTime();
+		UE_LOG(LogTemp, Warning, TEXT("Max Play Time: %f"), BTSGameState->MaxPlayTime);
 	}
 	Cast<ABTSHUD>(GetWorld()->GetFirstPlayerController()->GetHUD())->ShowClearHUD();
 	OnGameClear.Broadcast();
