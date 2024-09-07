@@ -74,6 +74,7 @@ void ABirdManager::SpawnBird()
 	// 서버에서 생성하면 자동 리플리케이션
 	Seagull = GetWorld()->SpawnActor<ABTSBird>(BirdClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
 	Seagull->ShowAlertRay(SpawnRotation);
+	// Seagull->ShowAlertRay(Fish);
 	if(!Seagull)
 	{
 		UE_LOG(LogTemp, Log, TEXT("Seagull is Null"))

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "BTSAlertBeam.h"
 #include "GameFramework/Actor.h"
 #include "BTSBird.generated.h"
 
@@ -27,6 +28,9 @@ public:
 	virtual void OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	void ShowAlertRay(FRotator DirToFly);
+	void ShowAlertRay(AActor* Fish);
+	
+	void FlyToPlayer(AActor* Fish);
 	void FlyToPlayer(FRotator DirToFly);
 	
 	UFUNCTION()
@@ -44,6 +48,9 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UProjectileMovementComponent> ProjectileMovementComponent;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<ABTSAlertBeam> AlertBeamClass;
 	
 public:
 	// 어딘가에 박힌 경우 true
