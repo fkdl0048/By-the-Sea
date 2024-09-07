@@ -4,6 +4,7 @@
 #include "JMH/BTSBird.h"
 
 #include "BTSAlertBeam.h"
+#include "BTSGameMode.h"
 #include "CHS/Character/BTSCharacterPlayer.h"
 #include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -62,6 +63,11 @@ void ABTSBird::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 	ABTSCharacterPlayer* Fish = Cast<ABTSCharacterPlayer>(OtherActor);
 	if(Fish)
 	{
+		ABTSGameMode* GameMode = Cast<ABTSGameMode>(GetWorld()->GetAuthGameMode());
+		if (GameMode)
+		{
+			GameMode->EndGame();
+		}
 		UE_LOG(LogTemp, Warning, TEXT("You Die"))
 	}
 	// 정지

@@ -34,6 +34,13 @@ void ABTSGameMode::EndGame()
 	{
 		BTSGameState->IncrementRespawnCount();
 	}
+	
+	APlayerController* PC = GetWorld()->GetFirstPlayerController();
+	if (PC->GetPawn())
+	{
+		PC->GetPawn()->Destroy();
+	}
+	
 	RespawnPlayer();
 	OnGameOver.Broadcast();
 }

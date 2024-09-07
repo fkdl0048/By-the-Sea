@@ -33,6 +33,12 @@ void ABirdManager::BeginPlay()
 	{
 		// OnGameStart 델리게이트에 FindFish 함수를 바인딩
 		GameMode->OnGameStart.AddDynamic(this, &ABirdManager::FindFish);
+
+		// 게임 오버시 갈매기 냅두고		
+		GameMode->OnGameOver.AddDynamic(this, &ABirdManager::FindFish);
+
+		// 게임 클리어 시 갈매기 모두 제거
+		GameMode->OnGameClear.AddDynamic(this,&ABirdManager::DeleteAllBird);
 	}
 }
 
@@ -94,10 +100,21 @@ void ABirdManager::SpawnBird()
 	// 서버에서 생성하면 자동 리플리케이션
 	Seagull = GetWorld()->SpawnActor<ABTSBird>(BirdClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
 	Seagull->ShowAlertRay(SpawnRotation);
+	AllBirds.Add(Seagull);
 	if(!Seagull)
 	{
 		UE_LOG(LogTemp, Log, TEXT("Seagull is Null"))
 	}
+}
+
+void ABirdManager::DeleteAllBird()
+{
+	// 완전 초기화
+	for (auto item : AllBirds)
+	{
+		item->Destroy();
+	}
+	AllBirds.Empty();
 }
 
 void ABirdManager::CalculateSpawnTransform()

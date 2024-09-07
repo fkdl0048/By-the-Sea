@@ -30,6 +30,9 @@ public:
 	virtual void FindFish();
 public:
 	void SpawnBird();
+	
+	UFUNCTION()
+	void DeleteAllBird();
 
 	void CalculateSpawnTransform();
 public:
@@ -44,6 +47,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<ABTSBird> BirdClass;
+
+	UPROPERTY()
+	TArray<ABTSBird*> AllBirds;
 
 public:
 	UPROPERTY(EditDefaultsOnly)
