@@ -95,7 +95,7 @@ void ABTSBird::ShowAlertRay(FRotator DirToFly)
 	// Ray쏘기
 	// ABTSAlertBeam* Beam = nullptr;
 	AlertBeam = GetWorld()->SpawnActor<ABTSAlertBeam>(AlertBeamClass, GetActorLocation(), FRotator::ZeroRotator);
-	AlertBeam->SetToShowStrataBeam(FLinearColor::Red, GetActorLocation() + DirToFly.Vector() * 1000.0f);	
+	AlertBeam->SetToShowStrataBeam(FLinearColor::Red, GetActorLocation() + DirToFly.Vector() * 5000.0f);	
 	// AlertBeam->FlickerBeam(FlickeringCount);
 	// GetActorLocation() + BirdMesh->GetComponentRotation().Quaternion().GetForwardVector() * 500.0f
 	// 타이머
