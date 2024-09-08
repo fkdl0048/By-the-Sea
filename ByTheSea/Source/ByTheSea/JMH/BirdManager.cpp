@@ -20,7 +20,7 @@ ABirdManager::ABirdManager()
 	CurrentSpawnCount = 0;
 	bSpawned = false;
 	bDoOnce = false;
-	
+	bClear = false;
 }
 
 // Called when the game starts or when spawned
@@ -36,9 +36,12 @@ void ABirdManager::BeginPlay()
 
 		// 게임 오버시 갈매기 냅두고		
 		GameMode->OnGameOver.AddDynamic(this, &ABirdManager::FindFish);
+		GameMode->OnGameOver.AddDynamic(this, &ABirdManager::ClearTimer);
 
 		// 게임 클리어 시 갈매기 모두 제거
 		GameMode->OnGameClear.AddDynamic(this,&ABirdManager::DeleteAllBird);
+		GameMode->OnGameClear.AddDynamic(this,&ABirdManager::ClearActivate);
+		GameMode->OnGameClear.AddDynamic(this, &ABirdManager::ClearTimer);
 	}
 }
 
@@ -49,6 +52,10 @@ void ABirdManager::Tick(float DeltaTime)
 	if(!Fish) return; 
 		
 	DistanceFromPlayer = UE::Geometry::Distance(Fish->GetActorLocation(), this->GetActorLocation());
+
+	// 물에 닿으면 비활성화
+	if(bClear) return;
+	
 	// 범위 안에 들어오면 
 	if(DistanceFromPlayer >= InnerRadius && DistanceFromPlayer <= OuterRadius)
 	{
@@ -174,6 +181,16 @@ void ABirdManager::DeleteAllBird()
 		item->Destroy();
 	}
 	AllBirds.Empty();
+}
+
+void ABirdManager::ClearActivate()
+{
+	bClear = true;
+}
+
+void ABirdManager::ClearTimer()
+{
+	GetWorld()->GetTimerManager().ClearTimer(SpawnTimerHandle);
 }
 
 void ABirdManager::CalculateSpawnTransform()

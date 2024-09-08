@@ -37,6 +37,12 @@ public:
 	UFUNCTION()
 	void DeleteAllBird();
 
+	UFUNCTION()
+	void ClearActivate();
+
+	UFUNCTION()
+	void ClearTimer();
+
 	void CalculateSpawnTransform();
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
@@ -90,6 +96,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool bDoOnce;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool bClear;
 
 	FTimerHandle SpawnTimerHandle;
 	FTimerHandle SpawnSequenceTimerHandle;
