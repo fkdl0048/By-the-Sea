@@ -162,7 +162,6 @@ void UDefaultInputComponent::Launch(const FInputActionValue& Value)
 	if (bJump)
 	{
 		// Jump Pressed
-		LaunchPressedTime = GetWorld()->GetTime().GetWorldTimeSeconds();
 	}
 	else
 	{
@@ -189,16 +188,8 @@ void UDefaultInputComponent::Launch(const FInputActionValue& Value)
 		FVector InputDirection = (ControllerFowardVector * CurInputVector.Y) + (ControllerRightVector * CurInputVector.X);
 		InputDirection.Normalize();
 
-		double LaunchReleasedTime = GetWorld()->GetTime().GetWorldTimeSeconds();
-		double TimeSpan = LaunchReleasedTime - LaunchPressedTime;
-		TimeSpan = FMath::Clamp(TimeSpan, 0.0, LaunchPressTimeMax);
-		double AdditionalChargeLaunchStrength = (TimeSpan / LaunchPressTimeMax) * (LaunchStrengthMax - LaunchStrengthMin);
-		double CalculatedLaunchStrength = LaunchStrengthMin + AdditionalChargeLaunchStrength;
-
-		UE_LOG(LogTemp, Log, TEXT("TimeSpan : %lf, CalculatedLaunchStrengh : %lf"), TimeSpan, CalculatedLaunchStrength);
-
 		FVector LaunchVector = InputDirection + SpeedCorretion;
-		LaunchVector *= CalculatedLaunchStrength;
+		LaunchVector *= LaunchStrength;
 
 		// 물고기 날리기
 		OwnerCharacter->LaunchCharacter(LaunchVector, true, true);
