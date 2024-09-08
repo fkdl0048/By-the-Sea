@@ -5,10 +5,12 @@
 
 #include "BTSAlertBeam.h"
 #include "BTSGameMode.h"
+#include "AssetTypeActions/AssetDefinition_SoundBase.h"
 #include "CHS/Character/BTSCharacterPlayer.h"
 #include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ABTSBird::ABTSBird()
@@ -87,7 +89,8 @@ void ABTSBird::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 
 void ABTSBird::ShowAlertRay(FRotator DirToFly)
 {
-	// DirToFly.Yaw -= 90.0f;
+	// 끼룩끼룩 소리
+	UGameplayStatics::PlaySoundAtLocation(this,SeagullSound, GetActorLocation());
 	
 	FTimerHandle AttackTimerHandle;
 	// BirdMesh
@@ -113,6 +116,7 @@ void ABTSBird::FlyToPlayer(FRotator DirToFly)
 {
 	// 빔 비활성화
 	AlertBeam->Deactivate();
+	UGameplayStatics::PlaySoundAtLocation(this,MySound, GetActorLocation());
 	// 방향을 전달받아서 발사
 	ProjectileMovementComponent->Velocity = DirToFly.Vector() * Speed;
 }
