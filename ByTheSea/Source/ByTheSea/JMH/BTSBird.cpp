@@ -5,10 +5,8 @@
 
 #include "BTSAlertBeam.h"
 #include "BTSGameMode.h"
-#include "AssetTypeActions/AssetDefinition_SoundBase.h"
 #include "CHS/Character/BTSCharacterPlayer.h"
 #include "Components/BoxComponent.h"
-#include "Components/CapsuleComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -88,10 +86,7 @@ void ABTSBird::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 }
 
 void ABTSBird::ShowAlertRay(FRotator DirToFly)
-{
-	// 끼룩끼룩 소리
-	UGameplayStatics::PlaySoundAtLocation(this,SeagullSound, GetActorLocation());
-	
+{	
 	FTimerHandle AttackTimerHandle;
 	// BirdMesh
 	DrawDebugLine(GetWorld(),GetActorLocation(),GetActorLocation() + BirdMesh->GetComponentRotation().Quaternion().GetForwardVector() * 100.0f,
