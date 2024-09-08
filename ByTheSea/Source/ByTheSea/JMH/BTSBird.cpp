@@ -5,10 +5,8 @@
 
 #include "BTSAlertBeam.h"
 #include "BTSGameMode.h"
-#include "AssetTypeActions/AssetDefinition_SoundBase.h"
 #include "CHS/Character/BTSCharacterPlayer.h"
 #include "Components/BoxComponent.h"
-#include "Components/CapsuleComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 

@@ -87,6 +87,7 @@ void ABirdManager::Tick(float DeltaTime)
 
 void ABirdManager::FindFish()
 {
+	bClear = false;
 	// 물고기 찾기
 	// 물고기 배열 선언
 	TArray<AActor*> FoundFish;
