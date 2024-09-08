@@ -54,6 +54,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<ABTSAlertBeam> AlertBeam;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Sound)
+	TObjectPtr<class USoundBase> SeagullSound;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Sound)
 	TObjectPtr<class USoundBase> MySound;
