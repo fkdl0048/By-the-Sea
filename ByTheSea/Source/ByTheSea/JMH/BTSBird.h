@@ -27,10 +27,10 @@ public:
 	UFUNCTION()
 	virtual void OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	UFUNCTION(BlueprintCallable)
 	void ShowAlertRay(FRotator DirToFly);
-	void ShowAlertRay(AActor* Fish);
-	
-	void FlyToPlayer(AActor* Fish);
+
+	UFUNCTION(BlueprintCallable)
 	void FlyToPlayer(FRotator DirToFly);
 	
 	UFUNCTION()
@@ -55,6 +55,11 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<ABTSAlertBeam> AlertBeam;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Sound)
+	TObjectPtr<class USoundBase> SeagullSound;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Sound)
+	TObjectPtr<class USoundBase> MySound;
 public:
 	// 어딘가에 박힌 경우 true
 	bool bCrashed;
